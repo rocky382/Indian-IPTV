@@ -62,34 +62,49 @@
         .btn:active { transform: scale(0.95); }
         .btn:disabled { opacity: 0.5; cursor: not-allowed; }
         
-        .btn-stop { background: var(--accent-red); }
-        .btn-settings { background: #4b5563; } /* Slate Gray color for settings */
-        .btn-settings:hover { background: #6b7280; }
-        .btn-refresh { background: var(--accent-blue); flex: 1; text-align: center; }
+        .btn-stop { background: var(--accent-red); flex-shrink: 0; }
+        .btn-refresh { background: var(--accent-blue); flex-shrink: 0; }
         
         .now-playing { margin-left: auto; color: var(--accent-green); font-weight: bold; font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 45%; text-align: right; }
 
         /* List Section */
         .list-section { width: 100%; flex: 1; display: flex; flex-direction: column; background: var(--bg-main); overflow: hidden; }
         
-        .toolbar { padding: 10px 15px; background: var(--bg-panel); display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; }
-        .toolbar-row { display: flex; gap: 8px; width: 100%; }
-        .toolbar input { flex: 1; padding: 10px; background: var(--bg-list); border: 1px solid #333; color: white; border-radius: 4px; font-size: 0.95rem; }
+        /* Single-line Toolbar Layout */
+        .toolbar { 
+            padding: 10px 15px; 
+            background: var(--bg-panel); 
+            display: flex; 
+            gap: 8px; 
+            align-items: center; 
+            flex-shrink: 0; 
+        }
+        .toolbar input { 
+            flex: 1; 
+            padding: 10px; 
+            background: var(--bg-list); 
+            border: 1px solid #333; 
+            color: white; 
+            border-radius: 4px; 
+            font-size: 0.95rem; 
+            min-width: 0; /* Allows input to shrink gracefully on narrow viewports */
+        }
         .toolbar input:focus { outline: 1px solid var(--accent-green); }
 
-        /* Tabs next to load button */
+        /* Tabs aligned on the single-row toolbar */
         .btn-tab {
             background: var(--bg-list);
             color: var(--text-muted);
             border: 1px solid #333;
             border-radius: 4px;
             font-weight: bold;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             cursor: pointer;
-            padding: 8px 12px;
+            padding: 10px 12px;
             transition: 0.2s;
             text-align: center;
             white-space: nowrap;
+            flex-shrink: 0;
         }
         .btn-tab.active {
             background: var(--accent-blue);
@@ -150,49 +165,6 @@
         .status-bar { background: var(--bg-list); padding: 8px 15px; font-size: 0.8rem; color: var(--accent-green); display: flex; justify-content: space-between; flex-shrink: 0; border-top: 1px solid #333; }
         .validating-text { color: var(--accent-yellow) !important; font-weight: bold; }
 
-        /* Settings Dialog Modal */
-        .settings-modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-        .settings-content {
-            background: var(--bg-panel);
-            padding: 20px;
-            border-radius: 8px;
-            width: 90%;
-            max-width: 360px;
-            border: 1px solid var(--accent-blue);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-        }
-        .settings-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            border-bottom: 1px solid #333;
-            padding-bottom: 8px;
-        }
-        .settings-header h2 { font-size: 1.1rem; color: var(--accent-blue); }
-        .close-settings { font-size: 1.5rem; cursor: pointer; color: var(--text-muted); }
-        .close-settings:hover { color: var(--text-main); }
-        .settings-body { display: flex; flex-direction: column; gap: 15px; }
-        .settings-label { font-weight: bold; font-size: 0.9rem; margin-bottom: 6px; display: block; }
-        .settings-select {
-            width: 100%;
-            padding: 8px 10px;
-            background: var(--bg-list);
-            color: var(--text-main);
-            border: 1px solid #333;
-            border-radius: 4px;
-            font-size: 0.9rem;
-        }
-        .settings-select:focus { outline: none; border-color: var(--accent-blue); }
-
         /* =========================================
            LANDSCAPE / DESKTOP LAYOUT 
            ========================================= */
@@ -235,7 +207,7 @@
             </div>
             <div class="player-controls">
                 <button class="btn btn-stop" onclick="stopPlayer()">⏹ STOP</button>
-                <button class="btn btn-settings" onclick="toggleSettingsModal(true)">⚙ Settings</button>
+                <button class="btn btn-refresh" id="refreshBtn" onclick="startProcess()">🔄 Load</button>
                 <div class="now-playing" id="nowPlayingText">Not playing</div>
             </div>
         </div>
@@ -243,14 +215,9 @@
         <!-- CHANNEL LIST & CONTROLS -->
         <div class="list-section">
             <div class="toolbar">
-                <div class="toolbar-row">
-                    <input type="text" id="searchInput" placeholder="🔍 Search channels..." oninput="filterChannels()">
-                </div>
-                <div class="toolbar-row">
-                    <button class="btn btn-refresh" id="refreshBtn" onclick="startProcess()">🔄 Load</button>
-                    <button class="btn-tab active" id="tabAll" onclick="switchTab('all')" style="flex: 1;">📺 All</button>
-                    <button class="btn-tab" id="tabFav" onclick="switchTab('favorites')" style="flex: 1;">⭐ Favorites</button>
-                </div>
+                <input type="text" id="searchInput" placeholder="🔍 Search channels..." oninput="filterChannels()">
+                <button class="btn-tab active" id="tabAll" onclick="switchTab('all')">📺 All</button>
+                <button class="btn-tab" id="tabFav" onclick="switchTab('favorites')">⭐ Favorites</button>
             </div>
             
             <div class="channel-list" id="channelList">
@@ -264,29 +231,6 @@
         <span id="countText">0 Working</span>
     </div>
 
-    <!-- SETTINGS MODAL -->
-    <div id="settingsModal" class="settings-modal" onclick="closeSettingsOnOuterClick(event)">
-        <div class="settings-content">
-            <div class="settings-header">
-                <h2>⚙ Settings</h2>
-                <span class="close-settings" onclick="toggleSettingsModal(false)">&times;</span>
-            </div>
-            <div class="settings-body">
-                <div class="settings-group">
-                    <label for="qualitySelect" class="settings-label">Stream Quality Preset</label>
-                    <select id="qualitySelect" class="settings-select" onchange="saveQualityPreset(this.value)">
-                        <option value="low">Low Quality (Saves Data)</option>
-                        <option value="medium">Medium Quality (Balanced)</option>
-                        <option value="high">High Quality (Max Bitrate)</option>
-                    </select>
-                    <small style="color: var(--text-muted); font-size: 0.75rem; display: block; margin-top: 5px;">
-                        Adaptive streams will automatically attempt to lock to the selected bandwidth index.
-                    </small>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script>
         const video = document.getElementById('videoPlayer');
         const channelListEl = document.getElementById('channelList');
@@ -295,7 +239,6 @@
         const countText = document.getElementById('countText');
         const nowPlayingText = document.getElementById('nowPlayingText');
         const refreshBtn = document.getElementById('refreshBtn');
-        const qualitySelect = document.getElementById('qualitySelect');
         
         let allChannels = [];
         let hls = null;
@@ -310,53 +253,12 @@
             'sun tv', 'vijay', 'gemini', 'udaya', 'asianet', 'news18', 'abp', 'sports18'
         ];
 
-        // Run automatically when DOM is loaded
+        // Trigger loading process when application initializes
         window.addEventListener('DOMContentLoaded', () => {
-            loadQualitySetting();
             startProcess();
         });
 
-        // Settings Dialog Handlers
-        function toggleSettingsModal(show) {
-            document.getElementById('settingsModal').style.display = show ? 'flex' : 'none';
-        }
-
-        function closeSettingsOnOuterClick(event) {
-            if (event.target === document.getElementById('settingsModal')) {
-                toggleSettingsModal(false);
-            }
-        }
-
-        function loadQualitySetting() {
-            const savedQuality = localStorage.getItem('tv_quality') || 'high';
-            qualitySelect.value = savedQuality;
-        }
-
-        function saveQualityPreset(value) {
-            localStorage.setItem('tv_quality', value);
-            if (hls) {
-                applyQualitySetting(hls);
-            }
-        }
-
-        function applyQualitySetting(hlsInstance) {
-            const quality = localStorage.getItem('tv_quality') || 'high';
-            const levels = hlsInstance.levels;
-            if (!levels || levels.length <= 1) return;
-
-            let targetLevel = -1;
-            if (quality === 'low') {
-                targetLevel = 0;
-            } else if (quality === 'medium') {
-                targetLevel = Math.floor(levels.length / 2);
-            } else {
-                targetLevel = levels.length - 1;
-            }
-            hlsInstance.currentLevel = targetLevel;
-            hlsInstance.loadLevel = targetLevel;
-        }
-
-        // Favorites Handlers
+        // Favorites Storage Handlers
         function getFavorites() {
             try {
                 return JSON.parse(localStorage.getItem('tv_favorites')) || [];
@@ -617,7 +519,6 @@
                 hls.loadSource(url);
                 hls.attachMedia(video);
                 hls.on(Hls.Events.MANIFEST_PARSED, function () {
-                    applyQualitySetting(hls);
                     video.play().catch(e => console.log("Autoplay blocked"));
                     nowPlayingText.innerText = `▶ ${name}`;
                 });
