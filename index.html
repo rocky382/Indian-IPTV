@@ -246,6 +246,22 @@
         let currentValidationRun = 0; 
         let activeTab = 'all'; // 'all' or 'favorites'
 
+        // Predefined channels requested by the user
+        const customChannels = [
+            {
+                name: "DD Sahyadri",
+                url: "https://d3qs3d2rkhfqrt.cloudfront.net/out/v1/66dcc3ebe182447ba42837e746cf0c7c/index.m3u8",
+                group: "DD Network",
+                language: "Marathi"
+            },
+            {
+                name: "DD National",
+                url: "https://cdn-1.pishow.tv/live/11/master.m3u8",
+                group: "DD Network",
+                language: "Hindi"
+            }
+        ];
+
         const indianKeywords = [
             'india', 'indian', 'hindi', 'tamil', 'telugu', 'kannada', 'malayalam',
             'marathi', 'bengali', 'punjabi', 'gujarati', 'bollywood', 'times now',
@@ -295,11 +311,15 @@
             refreshBtn.disabled = true;
             searchInput.value = "";
             channelListEl.innerHTML = "";
-            allChannels = [];
+            
+            // Prime system with user-specified custom channels immediately
+            allChannels = [...customChannels];
+            sortAllChannels();
+            filterChannels();
             
             statusText.className = "";
             statusText.innerText = "Downloading playlist...";
-            countText.innerText = "0 Working";
+            countText.innerText = `${allChannels.length} Working`;
 
             try {
                 const response = await fetch("https://iptv-org.github.io/iptv/index.m3u");
@@ -313,8 +333,8 @@
                 await validateChannels(rawChannels, currentValidationRun);
                 
             } catch (error) {
-                statusText.innerText = "Error loading! Check internet.";
-                statusText.style.color = "var(--accent-red)";
+                statusText.innerText = "Playlist fetch failed. Only local channels loaded.";
+                statusText.style.color = "var(--accent-yellow)";
                 refreshBtn.disabled = false;
                 refreshBtn.innerText = "🔄 Load";
             }
@@ -414,15 +434,20 @@
         }
 
         // --- Sort by Category, then by Name ---
-        function insertAndRenderChannel(ch) {
-            allChannels.push(ch);
-            
+        function sortAllChannels() {
             allChannels.sort((a, b) => {
                 const groupCompare = a.group.localeCompare(b.group);
                 if (groupCompare !== 0) return groupCompare;
                 return a.name.localeCompare(b.name);
             });
-            
+        }
+
+        function insertAndRenderChannel(ch) {
+            // Prevent duplicates in case the online list also contains the custom URLs
+            if (allChannels.some(existing => existing.url === ch.url)) return;
+
+            allChannels.push(ch);
+            sortAllChannels();
             filterChannels();
         }
 
