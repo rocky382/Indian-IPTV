@@ -246,7 +246,7 @@
         let currentValidationRun = 0; 
         let activeTab = 'all'; // 'all' or 'favorites'
 
-        // Predefined channels requested by the user
+        // Predefined custom channel list
         const customChannels = [
             {
                 name: "DD Sahyadri",
@@ -258,6 +258,36 @@
                 name: "DD National",
                 url: "https://cdn-1.pishow.tv/live/11/master.m3u8",
                 group: "DD Network",
+                language: "Hindi"
+            },
+            {
+                name: "Goldmines",
+                url: "https://cdn-2.pishow.tv/live/1459/master.m3u8",
+                group: "Movies",
+                language: "Hindi"
+            },
+            {
+                name: "Big Magic",
+                url: "https://mumt05.tangotv.in/87NeALx2BIGMAGIC/index.m3u8",
+                group: "Movies",
+                language: "Hindi"
+            },
+            {
+                name: "Shemaroo Josh",
+                url: "https://airtelapp.shemaroo.com/shemarooChumbakTV/smil:shemarooChumbakTVadp.smil/playlist.m3u8",
+                group: "Entertainment",
+                language: "Hindi"
+            },
+            {
+                name: "HISTORY TV18 - Hindi",
+                url: "https://amg01448-amg01448c16-samsung-in-3495.playouts.now.amagi.tv/ts-ap-s1-n1/playlist/amg01448-samsungindia-historychannelhindi-samsungin/playlist.m3u8?ads.app_domain=%7BAPP_DOMAIN%7D&ads.app_name=%7BAPP_NAME%7D&ads.coppa=0&ads.did=%7BPSID%7D&ads.dnt=%7BTARGETOPT%7D",
+                group: "Documentary",
+                language: "Hindi"
+            },
+            {
+                name: "The Movie Club",
+                url: "https://amg01448-samsungin-movieclub-amagi-ssai-samsungin-bxp18.amagi.tv/ts-ap-s1-n1/playlist/amg01448-samsungin-movieclub-amagi-ssai-samsungin-adr/playlist.m3u8?ads.app_domain=%7BAPP_DOMAIN%7D&ads.app_domain=%7BAPP_DOMAIN%7D&ads.app_name=%7BAPP_NAME%7D&ads.app_name=%7BAPP_NAME%7D&ads.coppa=0&ads.device_did=%7BPSID%7D&ads.device_dnt=%7BTARGETOPT%7D&ads.did=%7BPSID%7D&ads.dnt=%7BTARGETOPT%7D&ads.service_id=IN38000072R&ads.ssai_vendor=SSSLIVE&channel_name=movieclub&pb_type=pb-zwaz3vs1k4cu7_akamai",
+                group: "Movies",
                 language: "Hindi"
             }
         ];
@@ -333,7 +363,7 @@
                 await validateChannels(rawChannels, currentValidationRun);
                 
             } catch (error) {
-                statusText.innerText = "Playlist fetch failed. Only local channels loaded.";
+                statusText.innerText = "Playlist fetch failed. Local channels ready.";
                 statusText.style.color = "var(--accent-yellow)";
                 refreshBtn.disabled = false;
                 refreshBtn.innerText = "🔄 Load";
