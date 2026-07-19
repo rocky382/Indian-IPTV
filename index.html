@@ -263,7 +263,7 @@
             {
                 name: "DD Sports 2.0",
                 url: "https://d3qs3d2rkhfqrt.cloudfront.net/out/v1/b17adfe543354fdd8d189b110617cddd/index.m3u8",
-                group: "DD Network",
+                group: "Sports",
                 language: "Hindi"
             },
             {
@@ -281,6 +281,12 @@
             {
                 name: "Shemaroo Josh",
                 url: "https://airtelapp.shemaroo.com/shemarooChumbakTV/smil:shemarooChumbakTVadp.smil/playlist.m3u8",
+                group: "Entertainment",
+                language: "Hindi"
+            },
+            {
+                name: "StarPlus",
+                url: "https://stream.tvivu.com/?url=http%3A%2F%2Ftvsen7.aynascope.net%2Fsphdbd%2Ftracks-v1a1%2Fmono.ts.m3u8&exp=1784523600&sig=79561eba934099b11e75888cfe1ac6973a5c434ef3663f4a995f4db24389b0e0",
                 group: "Entertainment",
                 language: "Hindi"
             },
@@ -612,7 +618,6 @@
             }
         }
 
-        // Stops playing stream
         function stopPlayer() {
             if (hls) {
                 hls.destroy();
